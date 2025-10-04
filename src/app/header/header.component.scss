@@ -1,0 +1,20 @@
+header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #676767;
+  button {
+    margin: 50px;
+    font-family: "Space Grotesk", sans-serif;
+    background-color: #353535;
+    color: white;
+    border-radius: 4px;
+    height: 40px;
+    font-size: 20px;
+  }
+  a {
+    text-decoration: none;
+    text-underline: none;
+    color: white;
+  }
+}
