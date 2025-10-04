@@ -1,0 +1,28 @@
+<div>
+  <label for="title">Todo: </label>
+  <input [(ngModel)]="title" type="text" placeholder="Add a new task…">
+
+  <button (click)="addNewTodo()">Add Todo</button>
+</div>
+
+<div>
+  <button (click)="todoService.removeAll()">Remove All Todos</button>
+
+  <div>
+    <button>all</button>
+    <button>active</button>
+    <button>done</button>
+  </div>
+
+  @for (todo of todoService.todoList(); track todo.id){
+    <div>
+      <ul>
+        <li [class.done]="todo.done">
+          {{ todo.title }} <input type="checkbox" (click)="todoService.toggle(todo.id)"/>
+          <button (click)="todoService.remove(todo.id)">Remove</button>
+        </li>
+      </ul>
+    </div>
+  }
+</div>
+

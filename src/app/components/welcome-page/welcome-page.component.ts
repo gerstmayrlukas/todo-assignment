@@ -7,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrl: './welcome-page.component.scss'
 })
 export class WelcomePageComponent {
-  welcomeText = 'WELCOME BACK! On the buttons above, you can switch to your todos!'
+  welcomeText = 'Welcome back! Use the buttons above to switch to your todos!'
 }
