@@ -9,12 +9,18 @@
   <button (click)="todoService.removeAll()">Remove All Todos</button>
 
   <div>
-    <button>all</button>
-    <button>active</button>
-    <button>done</button>
+    <button (click)="setStatus('all')">All</button>
+    <button (click)="setStatus('active')">Active</button>
+    <button (click)="setStatus('done')">Done</button>
   </div>
 
-  @for (todo of todoService.todoList(); track todo.id){
+  <div>
+    <p> Active: {{ remainingCount() }}</p>
+    <p> Done: {{ completedCount() }}</p>
+    <p> All: {{ allCount() }}</p>
+  </div>
+
+  @for (todo of filteredTodos(); track todo.id) {
     <div>
       <ul>
         <li [class.done]="todo.done">

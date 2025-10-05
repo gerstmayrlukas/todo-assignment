@@ -31,7 +31,6 @@ export class TodoService {
       }]);
   }
 
-
   toggle(id: string) {
     this.todoList.update(todos =>
       todos.map(todo =>

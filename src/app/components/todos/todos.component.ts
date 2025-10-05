@@ -1,7 +1,7 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Todo} from '../../models/todo.model';
+import {Component, computed, effect, OnInit, signal} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {TodoService} from '../../services/todo.service';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-todos',
@@ -13,10 +13,59 @@ import {TodoService} from '../../services/todo.service';
 })
 export class TodosComponent implements OnInit {
 
-  constructor(public todoService: TodoService) {
-  }
+  selectedStatus = signal<'all' | 'active' | 'done'>('all');
 
   title: string = '';
+
+  filteredTodos = computed(() => {
+    const status = this.selectedStatus();
+    const allTodos = this.todoService.todoList();
+
+    if (status === 'active') {
+      return allTodos.filter(todo => !todo.done);
+    } else if (status === 'done') {
+      return allTodos.filter(todo => todo.done);
+    } else {
+      return allTodos;
+    }
+  });
+
+  remainingCount = computed(() =>
+    this.todoService.todoList().filter(todo => !todo.done).length
+  );
+
+  completedCount = computed(() =>
+    this.todoService.todoList().filter(todo => todo.done).length
+  );
+
+  allCount = computed(() =>
+    this.todoService.todoList().length
+  )
+
+  constructor(
+    public todoService: TodoService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
+    const statusFromUrl = this.route.snapshot.queryParamMap.get('status');
+    if (statusFromUrl === 'active' || statusFromUrl === 'done') {
+      this.selectedStatus.set(statusFromUrl);
+    }
+
+    effect(() => {
+      const filter = this.selectedStatus();
+
+      this.router.navigate([], {
+        queryParams: {status: filter === 'all' ? null : filter},
+        replaceUrl: true
+      });
+    });
+  }
+
+  setStatus(filter: 'all' | 'active' | 'done') {
+    this.selectedStatus.set(filter);
+  }
+
 
   ngOnInit(): void {
     const storedTodos = localStorage.getItem('todos');
@@ -33,38 +82,5 @@ export class TodosComponent implements OnInit {
       this.todoService.add(this.title);
       this.title = '';
     }
-
   }
 }
-
-/* before service
-
-todo: string = '';
-
-todos: Todo[] = [];
-
-
-addNewTodo() {
-  if(this.todo === '') {
-    window.alert("Type in a todo!")
-  }else (
-    this.todos.push({
-        id: Date.now().toString(),
-        title: this.todo.trim(),
-        done: false
-      }
-    )
-  )
-  this.todo = '';
-}
-
-changeDone(id: string) {
-  const todo = this.todos.find(todo => todo.id === id);
-  if(todo){
-    todo.done = !todo.done;
-  }
-}
-
-deleteTodo(id: string) {
-  this.todos = this.todos.filter(todo => todo.id !== id);
-}*/
