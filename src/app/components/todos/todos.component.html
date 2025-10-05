@@ -1,34 +1,74 @@
-<div>
-  <label for="title">Todo: </label>
-  <input [(ngModel)]="title" type="text" placeholder="Add a new task…">
+@if (showUndoBanner()) {
+  <div class="undo-banner">
+    Task deleted.
+    <button (click)="undoDelete()">Undo</button>
+  </div>
+}
 
-  <button (click)="addNewTodo()">Add Todo</button>
+<div class="add-todo-container">
+  <label for="title"><h1>Type Todo:</h1></label>
+  <input [(ngModel)]="title" (keyup.enter)="addNewTodo()" type="text" placeholder="Add a new task…">
+
+  <button class="add-button" (click)="addNewTodo()">Add Todo</button>
+  <button class="remove-all-button" (click)="todoService.removeAll()">Remove All Todos</button>
 </div>
-
 <div>
-  <button (click)="todoService.removeAll()">Remove All Todos</button>
 
-  <div>
+  <hr/>
+
+  <div class="choose-status-container">
+    <h1>Choose status:</h1>
+
     <button (click)="setStatus('all')">All</button>
     <button (click)="setStatus('active')">Active</button>
     <button (click)="setStatus('done')">Done</button>
   </div>
+  <hr/>
 
-  <div>
-    <p> Active: {{ remainingCount() }}</p>
-    <p> Done: {{ completedCount() }}</p>
-    <p> All: {{ allCount() }}</p>
+  <div class="status-container">
+    <h1>Statuslist of your todos:</h1>
+    <h3> Active: {{ remainingCount() }} - Done: {{ completedCount() }} - All: {{ allCount() }} </h3>
+
   </div>
+  <hr/>
 
-  @for (todo of filteredTodos(); track todo.id) {
-    <div>
-      <ul>
-        <li [class.done]="todo.done">
-          {{ todo.title }} <input type="checkbox" (click)="todoService.toggle(todo.id)"/>
-          <button (click)="todoService.remove(todo.id)">Remove</button>
-        </li>
-      </ul>
-    </div>
-  }
+  <div class="todo-list-container">
+    <h1>Your Todo's:</h1>
+    @if (todoService.todoList().length !== 0) {
+      @for (todo of filteredTodos(); track todo.id) {
+
+        @if (editingTodoId() === todo.id) {
+          <input
+            type="text"
+            [value]="todo.title"
+            (keyup.enter)="saveEditing(todo.id, $any($event.target).value)"
+            (keyup.escape)="cancelEdit()"
+            (blur)="saveEditing(todo.id, $any($event.target).value)"
+            autofocus
+          />
+
+        } @else {
+          <div class="todo-elements">
+            <ul>
+              <li (click)="startEditing(todo.id)" [class.done]="todo.done">
+                <span>{{ todo.title }}</span>
+                <input
+                  class="checkbox-element"
+                  type="checkbox"
+                  (click)="todoService.toggle(todo.id); $event.stopPropagation()"
+                />
+                <button
+                  (click)="deleteTodoWithUndo(todo.id)">
+                  Remove
+                </button>
+              </li>
+            </ul>
+          </div>
+        }
+      }
+    } @else {
+      <p>No Todo's here!</p>
+    }
+  </div>
 </div>
 

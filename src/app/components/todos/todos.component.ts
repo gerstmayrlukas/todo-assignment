@@ -2,6 +2,7 @@ import {Component, computed, effect, OnInit, signal} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {TodoService} from '../../services/todo.service';
 import {ActivatedRoute, Router} from '@angular/router';
+import {Todo} from '../../models/todo.model';
 
 @Component({
   selector: 'app-todos',
@@ -14,6 +15,14 @@ import {ActivatedRoute, Router} from '@angular/router';
 export class TodosComponent implements OnInit {
 
   selectedStatus = signal<'all' | 'active' | 'done'>('all');
+
+  editingTodoId = signal<string | null>(null);
+
+  lastDeletedTodo = signal<Todo | null>(null)
+
+  showUndoBanner = signal(false)
+
+  private undoTimeout?: number;
 
   title: string = '';
 
@@ -81,6 +90,60 @@ export class TodosComponent implements OnInit {
     } else {
       this.todoService.add(this.title);
       this.title = '';
+    }
+  }
+
+  startEditing(todoId: string) {
+    this.editingTodoId.set(todoId);
+  }
+
+  saveEditing(todoId: string, newTitle: string) {
+    if (newTitle.trim() === '') {
+      return;
+    }
+    this.todoService.updateTitle(todoId, newTitle.trim());
+
+    this.editingTodoId.set(null);
+  }
+
+  cancelEdit() {
+    this.editingTodoId.set(null)
+  }
+
+  deleteTodoWithUndo(id: string) {
+    const todos = this.todoService.todoList();
+    const todo = todos.find(todo => todo.id === id);
+
+    if(todo){
+      this.lastDeletedTodo.set(todo)
+
+      this.showUndoBanner.set(true);
+
+      this.todoService.remove(id);
+    }
+    if(this.undoTimeout){
+      window.clearTimeout(this.undoTimeout);
+    }
+    this.undoTimeout = window.setTimeout(() => {
+      this.showUndoBanner.set(false);
+
+      this.lastDeletedTodo.set(null);
+    }, 5000);
+  }
+
+  undoDelete() {
+    const todo = this.lastDeletedTodo();
+
+    if(todo){
+      this.todoService.restore(todo);
+
+      this.showUndoBanner.set(false);
+
+      this.lastDeletedTodo.set(null);
+    }
+
+    if (this.undoTimeout) {
+      clearTimeout(this.undoTimeout);
     }
   }
 }

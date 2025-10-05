@@ -2,3 +2,123 @@
   text-decoration: line-through;
   color: grey;
 }
+button {
+  font-family: "Space Grotesk", sans-serif;
+  background-color: #353535;
+  color: white;
+  border-radius: 4px;
+  height: 40px;
+  font-size: 20px;
+}
+
+.choose-status-container {
+  display: flex;
+  justify-items: center;
+  align-items: center;
+  button {
+    margin-left: 15px;
+    cursor: pointer;
+    &:hover{
+      background-color: #656565;
+    }
+  }
+}
+
+.remove-all-button{
+  background-color: rgba(213, 1, 1, 0.69);
+  cursor: pointer;
+  &:hover{
+    background-color: rgba(227, 88, 88, 0.73);
+  }
+}
+
+.add-button {
+  background-color: #11b311;
+  cursor: pointer;
+  &:hover {
+    background-color: #17ef17;
+  }
+}
+
+.add-todo-container {
+  margin: 10px;
+  display: flex;
+  justify-items: center;
+  align-items: center;
+  button{
+    margin: 10px;
+  }
+  input {
+    font-family: "Space Grotesk", sans-serif;
+    height: 20px;
+    width: 300px;
+    margin-left: 15px;
+  }
+}
+
+.status-container {
+  display: flex;
+  justify-items: center;
+  align-items: center;
+  h3 {
+    margin-left: 15px;
+  }
+}
+
+.checkbox-element{
+
+  cursor: pointer;
+
+  accent-color: #0ea5e9;
+  width: 18px;
+  height: 18px;
+  margin: 10px;
+}
+
+.todo-elements{
+ span {
+   font-size: 15px;
+ }
+  button{
+    cursor: pointer;
+
+
+    &:hover{
+      background-color: #656565;
+    }
+  }
+}
+
+.undo-banner {
+  position: fixed;
+
+  bottom: 20px;
+
+  left: 50%;
+  transform: translateX(-50%);
+
+  background: #333;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  button {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 6px 15px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-weight: bold;
+
+    &:hover {
+      background: #45a049;
+    }
+  }
+}

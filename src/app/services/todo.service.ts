@@ -49,4 +49,18 @@ export class TodoService {
     this.todoList.set([]);
     localStorage.removeItem("todos");
   }
+
+  updateTitle(id: string, newTitle: string) {
+    this.todoList.update(todos =>
+      todos.map(todo =>
+
+        todo.id === id
+          ? {...todo, title: newTitle}
+          : todo
+      )
+    )
+  }
+  restore(todo: Todo){
+    this.todoList.update(todos => [...todos, todo])
+  }
 }

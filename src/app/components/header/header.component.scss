@@ -11,6 +11,10 @@ header {
     border-radius: 4px;
     height: 40px;
     font-size: 20px;
+    &:hover {
+      background-color: #656565;
+
+    }
   }
   a {
     text-decoration: none;
